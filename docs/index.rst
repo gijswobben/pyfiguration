@@ -14,6 +14,7 @@
 
    installation
    writing_configuration
+   using_configuration
    command_line_tool
    api
 
