@@ -8,7 +8,7 @@ PyFiguration is a configuration tool for Python. It allows you to define which c
 ## Basic usage
 In your code you can define which configurations should be available. This example creates a simple Flask server. The port on which the server should start depends on the configuration.
 
-```
+```python
 """ script.py
 """
 from pyfiguration import conf
@@ -36,7 +36,7 @@ if __name__ == "__main__":
 
 You can use the PyFiguration command line tool to inspect this module/script:
 
-```
+```console
 $ pyfiguration module script.py
 The following options can be used in a configuration file for the module 'script.py':
 server:
@@ -51,7 +51,7 @@ server:
 
 This tells you that the default value for server.port is 8000, and that it should be an integer between 80 and 9999. Running the script (`python script.py`) will start the server on the default port. Lets create a configuration file to overwrite the default:
 
-```
+```yaml
 # config.yaml
 server:
   port: 5000
@@ -59,7 +59,7 @@ server:
 
 Now we can start the script again, pointing to the config file to use it:
 
-```
+```console
 $ python script.py --config ./config.yaml
 Starting on port 5000
  * Serving Flask app "script" (lazy loading)
@@ -74,7 +74,7 @@ Success! The script has used the configuration we've defined in `config.yaml` fi
 
 If you have a configuration file and a script, you can also use the PyFiguration command line to check the config file for errors. Imaging this configuration file:
 
-```
+```yaml
 # config_with_warnings.yaml
 server:
   port: 500.0
@@ -83,7 +83,7 @@ server:
 
 We've obviously made 2 mistakes here: 1: the port is a float, 2: there is a key that is not being used by our script. Lets use the command line tool to investigate.
 
-```
+```console
 $ pyfiguration config script.py --config config_with_warnings.yaml
 --------
  Errors 
