@@ -1,4 +1,5 @@
 ![Tests](https://img.shields.io/github/workflow/status/gijswobben/pyfiguration/Python%20test%20package/master?label=Test%20pipeline&logo=github&logoColor=%23959da5&style=for-the-badge)
+![TestCoverage](https://img.shields.io/codecov/c/github/gijswobben/pyfiguration/master?label=Test%20Coverage&logo=Codecov&logoColor=%23959da5&style=for-the-badge)
 ![Release](https://img.shields.io/pypi/v/pyfiguration?color=%233775A9&label=PyPi%20package%20version&logo=PyPi&logoColor=%23959da5&style=for-the-badge)
 ![PythonVersion](https://img.shields.io/pypi/pyversions/pyfiguration?color=%233775A9&label=Python%20versions&logo=Python&logoColor=%23959da5&style=for-the-badge)
 
