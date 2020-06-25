@@ -23,4 +23,5 @@
    :maxdepth: 2
    :hidden:
 
+   Code of conduct <code_of_conduct>
    license
