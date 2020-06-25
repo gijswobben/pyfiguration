@@ -1,9 +1,25 @@
 .. include:: README.rst
 
 .. toctree::
-   :caption: Table of Contents
+   :maxdepth: 2
    :hidden:
 
    self
    quickstart
-   LICENCE
+
+.. toctree::
+   :caption: Usage
+   :maxdepth: 2
+   :hidden:
+
+   installation
+   writing_configuration
+   command_line_tool
+   api
+
+.. toctree::
+   :caption: About
+   :maxdepth: 2
+   :hidden:
+
+   licence
