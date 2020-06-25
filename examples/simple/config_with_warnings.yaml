@@ -1,0 +1,4 @@
+# config_with_warnings.yaml
+server:
+  port: 500.0
+  not_needed_key: some random value
