@@ -13,7 +13,8 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     install_requires=[
         "click",
-        "colorama"
+        "colorama",
+        "pyyaml"
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
