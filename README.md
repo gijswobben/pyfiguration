@@ -5,9 +5,6 @@
 # PyFiguration
 PyFiguration is a configuration tool for Python. It allows you to define which configuration are used from right inside your code. The PyFiguration command line tool helps you inspect which configurations are available, what the allowed values are, and helps to inspect the validity of a configuration file for a specific script.
 
-## Full documentation
-https://pyfiguration.readthedocs.io/en/latest/
-
 ## Basic usage
 In your code you can define which configurations should be available. This example creates a simple Flask server. The port on which the server should start depends on the configuration.
 
