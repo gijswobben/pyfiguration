@@ -2,7 +2,7 @@
 ![TestCoverage](https://img.shields.io/codecov/c/github/gijswobben/pyfiguration/master?label=Test%20Coverage&logo=Codecov&logoColor=%23959da5&style=for-the-badge)
 ![Release](https://img.shields.io/pypi/v/pyfiguration?color=%233775A9&label=PyPi%20package%20version&logo=PyPi&logoColor=%23959da5&style=for-the-badge)
 ![PythonVersion](https://img.shields.io/pypi/pyversions/pyfiguration?color=%233775A9&label=Python%20versions&logo=Python&logoColor=%23959da5&style=for-the-badge)
-
+![ReadTheDocs](https://img.shields.io/badge/READTHEDOCS-Available-555555?style=for-the-badge&color=brightgreen&logo=Read%20the%20docs&logoColor=%23959da5)
 # PyFiguration
 PyFiguration is a configuration tool for Python. It allows you to define which configuration are used from right inside your code. The PyFiguration command line tool helps you inspect which configurations are available, what the allowed values are, and helps to inspect the validity of a configuration file for a specific script.
 
