@@ -1,11 +1,18 @@
+import os
 import setuptools
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+if os.path.isfile("./VERSION"):
+    with open("./VERSION") as fh:
+        version = fh.read()
+else:
+    version = "master"
+
 setuptools.setup(
     name="pyfiguration",
-    version="0.0.1",
+    version=version,
     author="Gijs Wobben",
     description="Smarter config for Python",
     long_description=long_description,
