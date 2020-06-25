@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import Any, List, Optional, Callable, TYPE_CHECKING
+from typing import Any, List, Callable, TYPE_CHECKING
 from collections.abc import MutableMapping
-from .utils import fromDotNotation
+from .utils import from_dot_notation
 
 
 if TYPE_CHECKING:
@@ -145,7 +145,7 @@ class Configuration(MutableMapping):
         Raises:
             exception: An error is thrown when the data type is incorrect
         """
-        allowedDataType = fromDotNotation(
+        allowedDataType = from_dot_notation(
             field=".".join([*self.parents, key]), obj=self.definition
         ).get("allowedDataType", None)
         if allowedDataType is not None and not isinstance(value, allowedDataType):
@@ -163,7 +163,7 @@ class Configuration(MutableMapping):
         Raises:
             exception: An error is thrown when the the value is not in the list of allowed values
         """
-        allowedValues = fromDotNotation(
+        allowedValues = from_dot_notation(
             field=".".join([*self.parents, key]), obj=self.definition
         ).get("allowedValues", None)
         if allowedValues is not None and value not in allowedValues:
@@ -181,10 +181,10 @@ class Configuration(MutableMapping):
         Raises:
             exception: An error is thrown when the value is out of range
         """
-        minValue = fromDotNotation(
+        minValue = from_dot_notation(
             field=".".join([*self.parents, key]), obj=self.definition
         ).get("minValue", None)
-        maxValue = fromDotNotation(
+        maxValue = from_dot_notation(
             field=".".join([*self.parents, key]), obj=self.definition
         ).get("maxValue", None)
 
@@ -207,7 +207,7 @@ class Configuration(MutableMapping):
         Raises:
             exception: An error is thrown when the value is missing and required
         """
-        required = fromDotNotation(
+        required = from_dot_notation(
             field=".".join([*self.parents, key]), obj=self.definition
         ).get("required", True)
 
@@ -243,20 +243,16 @@ class Configuration(MutableMapping):
         self._set_definition(self.pyfiguration.definition)
 
         # Make sure the key exists in the definition
-        keyDefinition = fromDotNotation(
+        keyDefinition = from_dot_notation(
             field=".".join([*self.parents, key]), obj=self.get_definition()
         )
-        # if not keyDefinition:
-        #     raise Exception(
-        #         f"Trying to access configuration '{'.'.join([*self.parents, key])}', but there is no definition for this key."
-        #     )
 
         # Keep track of the keys that have been accessed
         if isinstance(self.accessStatus.get(key, None), bool):
             self.accessStatus[key] = True
 
         # Get the value from the store
-        defaultValue = fromDotNotation(
+        defaultValue = from_dot_notation(
             field=".".join([*self.parents, key]), obj=self.get_definition()
         ).get("default", None)
         if defaultValue is None and "required" not in keyDefinition:

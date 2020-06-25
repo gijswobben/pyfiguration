@@ -10,7 +10,7 @@ import importlib.util
 
 from .configuration import Configuration
 from functools import reduce
-from typing import List, Dict
+from typing import List
 from importlib.abc import Loader
 
 
@@ -153,7 +153,7 @@ def config(context: click.Context, module: str):
                 assert definitionForKey[key] != {}
             except Warning as w:
                 warnings.append(str(w))
-            except AssertionError as e:
+            except AssertionError:
                 warnings.append(
                     f"Key '{'.'.join([*parents, key])}' doesn't exist in the definition and is not used in the module."
                 )

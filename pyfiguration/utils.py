@@ -1,10 +1,13 @@
+""" Utility methods that are used by PyFiguration.
+"""
+
 import operator
 
 from functools import reduce
-from typing import Optional, List
+from typing import Optional, List, Any
 
 
-def mergeDictionaries(a: dict, b: dict, path: Optional[List[str]] = None):
+def merge_dictionaries(a: dict, b: dict, path: Optional[List[str]] = None) -> dict:
     """ Merges dictionary b into a, prefering keys in b over keys in a.
 
     Args:
@@ -16,11 +19,12 @@ def mergeDictionaries(a: dict, b: dict, path: Optional[List[str]] = None):
         merged: The merged dictionaries
     """
 
-    if path is None: path = []
+    if path is None:
+        path = []
     for key in b:
         if key in a:
             if isinstance(a[key], dict) and isinstance(b[key], dict):
-                mergeDictionaries(a[key], b[key], path + [key])
+                merge_dictionaries(a[key], b[key], path + [key])
             elif a[key] == b[key]:
                 pass
             else:
@@ -29,7 +33,8 @@ def mergeDictionaries(a: dict, b: dict, path: Optional[List[str]] = None):
             a[key] = b[key]
     return a
 
-def fromDotNotation(field: str, obj: dict):
+
+def from_dot_notation(field: str, obj: dict) -> Any:
     """ Method to retrieve a value from the configuration using dot-notation.
     Dot-notation means nested fields can be accessed by concatenating all the parents
     and the key with a "." (e.g. db.driver.name).
@@ -54,3 +59,7 @@ def fromDotNotation(field: str, obj: dict):
     # Use reduce to traverse the dictionary and retrieve the required keys
     value = reduce(retrievePart, keys, obj)
     return value
+
+
+mergeDictionaries = merge_dictionaries
+fromDotNotation = from_dot_notation

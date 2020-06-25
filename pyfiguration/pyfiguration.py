@@ -1,3 +1,9 @@
+""" The PyFiguration class is the class that is used for the `conf`
+object that is imported (`from pyfiguration import conf`). This class
+can be used to define what the configurations should look like, and to
+access the configurations once the're set.
+"""
+
 from __future__ import annotations
 
 import os
@@ -7,12 +13,14 @@ import argparse
 
 from functools import wraps
 from typing import Any, List, Optional
-from .utils import fromDotNotation, mergeDictionaries
+from .utils import from_dot_notation, merge_dictionaries
 from .configuration import Configuration
 
 
 class PyFiguration:
     """ Load and document configuration files the right way!
+
+    NOTE: All functions are implemented in snake case and have an alias in camel case (e.g. `add_int_field()` and `addIntField()`)
     """
 
     def __init__(self):
@@ -62,26 +70,30 @@ class PyFiguration:
 
                         # Load all JSON and YAML files
                         if name.endswith(".json"):
-                            config = mergeDictionaries(
+                            config = merge_dictionaries(
                                 config, json.load(open(os.path.join(path, name), "r"))
                             )
                         elif name.endswith(".yaml") or name.endswith(".yml"):
-                            config = mergeDictionaries(config, yaml.load(open(os.path.join(path, name), "r"), Loader=yaml.FullLoader))  # type: ignore
+                            config = merge_dictionaries(
+                                config,
+                                yaml.load(open(os.path.join(path, name), "r"), Loader=yaml.FullLoader)
+                            )  # type: ignore
 
             # If the source is a JSON file, just read it
             elif source.endswith(".json") and os.path.isfile(source):
-                config = mergeDictionaries(config, json.load(open(source, "r")))
+                config = merge_dictionaries(config, json.load(open(source, "r")))
 
             # If the source is a YAML file, just read it
             elif (
                 source.endswith(".yaml") or source.endswith(".yml")
             ) and os.path.isfile(source):
-                config = mergeDictionaries(config, yaml.load(open(source, "r"), Loader=yaml.FullLoader))  # type: ignore
+                config = merge_dictionaries(config, yaml.load(open(source, "r"), Loader=yaml.FullLoader))  # type: ignore
 
             # Show an error if we're trying to read from something else then a YAML, JSON or folder
             elif source not in ["./config/defaults", "./config.json", "./config.yaml"]:
                 raise Exception(
-                    f"Unable to read configuration from '{source}'. Configuration can only be stored in .json, .yml, or .yaml files"
+                    f"Unable to read configuration from '{source}'."
+                    "Configuration can only be stored in .json, .yml, or .yaml files"
                 )
 
         self.configuration = Configuration(**config, pyfiguration=self)  # type: ignore
@@ -107,7 +119,9 @@ class PyFiguration:
         def recurse(d: dict, parents: List[str] = []) -> dict:
             result: dict = {}
             for key, value in d.items():
-                data = fromDotNotation(field=".".join([*parents, key]), obj=self.configuration)
+                data = from_dot_notation(
+                    field=".".join([*parents, key]), obj=self.configuration
+                )
                 if isinstance(data, Configuration):
                     result[key] = recurse(value, parents=[*parents, key])
                 else:
@@ -117,7 +131,7 @@ class PyFiguration:
         # Loop over the dict representation of the configuration and yield tuples
         for key, value in recurse(self.definition).items():
             yield (key, value)
-    
+
     def __str__(self) -> str:
         # Convert to a dictionary and convert to string (uses __iter__)
         return str(dict(self))
@@ -136,7 +150,7 @@ class PyFiguration:
         """
 
         # Get the part of the definition that belongs to this field
-        subDefinition = fromDotNotation(field=field, obj=self.definition)
+        subDefinition = from_dot_notation(field=field, obj=self.definition)
 
         # Extract the values
         args = [
@@ -318,6 +332,3 @@ class PyFiguration:
 
 # Create an instance of PyFiguration
 conf = PyFiguration()
-
-# Import the CLI here to make it available for click
-from .cli import cli
