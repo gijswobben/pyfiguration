@@ -39,8 +39,8 @@ class PyFiguration:
         # Create an argument parser that will extract the source of the configuration from the command line
         parser = argparse.ArgumentParser(usage=argparse.SUPPRESS, add_help=enableHelp)
         parser.add_argument(
-            "--config",
             "-c",
+            "--config",
             nargs="*",
             help="Specify the configuration files to use",
             default=[],
@@ -50,13 +50,6 @@ class PyFiguration:
 
         # Create a container for the loaded configurations
         config: dict = {}
-
-        # Try the defaults first, then the user specified
-        configSource = [
-            "./config/defaults",
-            "./config.json",
-            "./config.yaml",
-        ] + configSource
 
         # Loop the config sources
         for source in configSource:
@@ -90,9 +83,9 @@ class PyFiguration:
                 config = merge_dictionaries(config, yaml.load(open(source, "r"), Loader=yaml.FullLoader))  # type: ignore
 
             # Show an error if we're trying to read from something else then a YAML, JSON or folder
-            elif source not in ["./config/defaults", "./config.json", "./config.yaml"]:
+            else:
                 raise Exception(
-                    f"Unable to read configuration from '{source}'."
+                    f"Unable to read configuration from '{source}'. "
                     "Configuration can only be stored in .json, .yml, or .yaml files"
                 )
 
@@ -120,7 +113,7 @@ class PyFiguration:
             result: dict = {}
             for key, value in d.items():
                 data = from_dot_notation(
-                    field=".".join([*parents, key]), obj=self.configuration
+                    field=".".join([*parents, key]), obj=dict(self.configuration)
                 )
                 if isinstance(data, Configuration):
                     result[key] = recurse(value, parents=[*parents, key])
