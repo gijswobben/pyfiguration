@@ -20,7 +20,8 @@ from .configuration import Configuration
 class PyFiguration:
     """ Load and document configuration files the right way!
 
-    NOTE: All functions are implemented in snake case and have an alias in camel case (e.g. `add_int_field()` and `addIntField()`)
+    NOTE: All functions are implemented in snake case and have an alias in
+    camel case (e.g. `add_int_field()` and `addIntField()`)
     """
 
     def __init__(self):
