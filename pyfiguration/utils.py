@@ -4,7 +4,7 @@
 import operator
 
 from functools import reduce
-from typing import Optional, List, Any
+from typing import Optional, List, Any, Dict
 
 
 def merge_dictionaries(a: dict, b: dict, path: Optional[List[str]] = None) -> dict:
@@ -34,7 +34,7 @@ def merge_dictionaries(a: dict, b: dict, path: Optional[List[str]] = None) -> di
     return a
 
 
-def from_dot_notation(field: str, obj: dict) -> Any:
+def from_dot_notation(field: str, obj: Dict[Any, Any]) -> Any:
     """ Method to retrieve a value from the configuration using dot-notation.
     Dot-notation means nested fields can be accessed by concatenating all the parents
     and the key with a "." (e.g. db.driver.name).
