@@ -19,8 +19,6 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     packages=setuptools.find_packages(),
     install_requires=[
-        "click",
-        "colorama",
         "pyyaml"
     ],
     classifiers=[
@@ -32,6 +30,6 @@ setuptools.setup(
     python_requires=">=3.7",
     entry_points="""
         [console_scripts]
-        pyfiguration=pyfiguration:cli
+        pyfiguration=pyfiguration.cli:cli
     """,
 )
