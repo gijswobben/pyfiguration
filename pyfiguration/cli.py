@@ -5,9 +5,11 @@ import sys
 import yaml
 import argparse
 import operator
-import importlib
 
-from typing import Any, List, Dict
+from importlib.util import spec_from_file_location, module_from_spec
+from importlib.abc import Loader
+
+from typing import Any, List, Dict, Optional
 from functools import reduce
 from .configuration import Configuration
 
@@ -104,9 +106,9 @@ def inspectConfig(script: str, *args, **kwargs):
 
     # Load the module from file
     os.environ["CLI"] = "TRUE"
-    spec = importlib.util.spec_from_file_location(scriptName, script)
-    importedModule = importlib.util.module_from_spec(spec)
-    if isinstance(spec.loader, importlib.abc.Loader):
+    spec = spec_from_file_location(scriptName, script)
+    importedModule = module_from_spec(spec)
+    if isinstance(spec.loader, Loader):
         spec.loader.exec_module(importedModule)
 
     # Get the configuration from the module
@@ -233,9 +235,9 @@ def inspectScript(script: str, *args, **kwargs):
     scriptName = os.path.splitext(os.path.split(script)[-1])[0]
 
     # Load the module from file
-    spec = importlib.util.spec_from_file_location(scriptName, script)
-    importedModule = importlib.util.module_from_spec(spec)
-    if isinstance(spec.loader, importlib.abc.Loader):
+    spec = spec_from_file_location(scriptName, script)
+    importedModule = module_from_spec(spec)
+    if isinstance(spec.loader, Loader):
         spec.loader.exec_module(importedModule)
 
     # Get the configuration from the module
@@ -280,13 +282,13 @@ def showHelp(exitCode: int = 1):
     sys.exit(1)
 
 
-def cli():
+def cli(args: Optional[List[str]] = None):
     """ Parse the arguments from the command line and
     take the appropriate action.
     """
 
     # Parse the input arguments
-    args = vars(parser.parse_known_args()[0])
+    args = vars(parser.parse_known_args(args)[0])
 
     # Execute the selected action
     actions[args.get("command", None)][args.get("inspect_type", None)](**args)
@@ -303,4 +305,4 @@ actions = {
 
 
 if __name__ == "__main__":
-    cli()
+    cli(sys.argv[1:])

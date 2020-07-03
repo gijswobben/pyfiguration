@@ -1,18 +1,22 @@
-from click.testing import CliRunner
-from pyfiguration import cli
+import io
+
+from pyfiguration.cli import cli
+from contextlib import redirect_stdout
 
 
 def test_cli_module():
-    runner = CliRunner()
-    result = runner.invoke(
-        cli,
-        [
-            "config",
-            "./examples/basic/basic.py",
-            "--config",
-            "./examples/basic/config/defaults",
-            "./examples/basic/config/deployments/a.yaml",
-        ],
-    )
-    assert result.exit_code == 0
-    assert result.output == ""
+    f = io.StringIO()
+    with redirect_stdout(f):
+        cli(
+            args=[
+                "inspect",
+                "config",
+                "-c",
+                "./examples/basic/config/defaults",
+                "./examples/basic/config/deployments/a.yaml",
+                "-s",
+                "./examples/basic/basic.py",
+            ]
+        )
+    result = f.getvalue()
+    assert result == ""
