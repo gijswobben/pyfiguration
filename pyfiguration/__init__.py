@@ -1,4 +1,3 @@
-from .cli import cli
 from .pyfiguration import PyFiguration
 
 
@@ -6,7 +5,6 @@ from .pyfiguration import PyFiguration
 conf = PyFiguration()
 
 __all__ = [
-    "cli",
     "PyFiguration",
     "conf",
 ]
