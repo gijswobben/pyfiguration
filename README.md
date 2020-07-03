@@ -38,7 +38,7 @@ if __name__ == "__main__":
 You can use the PyFiguration command line tool to inspect this module/script:
 
 ```console
-$ pyfiguration module script.py
+$ pyfiguration inspect script -s script.py
 The following options can be used in a configuration file for the module 'script.py':
 server:
   port:
@@ -85,13 +85,13 @@ server:
 We've obviously made 2 mistakes here: 1: the port is a float, 2: there is a key that is not being used by our script. Lets use the command line tool to investigate.
 
 ```console
-$ pyfiguration config script.py --config config_with_warnings.yaml
+$ pyfiguration inspect config -s script.py -c config_with_warnings.yaml
 --------
- Errors 
+ Errors
 --------
    ✗ Value '500.0' is not of the correct type. The allowed data type is: int
 ----------
- Warnings 
+ Warnings
 ----------
    ! Key 'server.not_needed_key' doesn't exist in the definition and is not used in the module.
 ```
