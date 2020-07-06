@@ -9,7 +9,7 @@ import operator
 from importlib.util import spec_from_file_location, module_from_spec
 from importlib.abc import Loader
 
-from typing import Any, List, Dict, Optional
+from typing import Any, Callable, List, Dict, Optional
 from functools import reduce
 from .configuration import Configuration
 
@@ -288,19 +288,18 @@ def cli(args: Optional[List[str]] = None):
     """
 
     # Parse the input arguments
-    args = vars(parser.parse_known_args(args)[0])
+    parsedArgs = vars(parser.parse_known_args(args)[0])
 
     # Execute the selected action
-    actions[args.get("command", None)][args.get("inspect_type", None)](**args)
+    actions[parsedArgs.get("command", None)][parsedArgs.get("inspect_type", None)](**parsedArgs)
 
 
-actions = {
+actions: Dict[str, Dict[str, Callable[..., None]]] = {
     "inspect": {
         "config": inspectConfig,
         "script": inspectScript,
         "module": inspectScript,
-    },
-    None: showHelp,
+    }
 }
 
 
