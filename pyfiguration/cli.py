@@ -52,7 +52,7 @@ configParser = inspectSubparsers.add_parser(
     description="""This command will load the SCRIPT and look at the defintion. Then
         it will load the CONFIG file and makes sure the CONFIG file is valid
         for the provided SCRIPT. SCRIPT is the filename of the SCRIPT to inspect with PyFiguraton,
-        CONFIG file is the configuration file to inspect, against the SCRIPT."""
+        CONFIG file is the configuration file to inspect, against the SCRIPT.""",
 )
 configParser.add_argument(
     "-c", "--config", nargs="*", help="The configuration file to inspect",
@@ -69,28 +69,14 @@ scriptParser = inspectSubparsers.add_parser(
         will load the script from file and inspect the PyFiguration decorators
         to find out what the configuration options are. Then, it will display all
         the option as the output of this command. SCRIPT is the filename of the
-        script to inspect with PyFiguraton"""
+        script to inspect with PyFiguraton""",
 )
 scriptParser.add_argument(
     "-s", "--script", help="The script against which to inspect the config",
 )
 
-# # Add arguments for the module inspector
-# moduleParser = inspectSubparsers.add_parser(
-#     "module",
-#     help="Inspect a module to see what configuration options are available",
-#     description="""Provide a file or script to inspect it with PyFiguration. This command
-#         will load the script from file and inspect the PyFiguration decorators
-#         to find out what the configuration options are. Then, it will display all
-#         the option as the output of this command. SCRIPT is the filename of the
-#         script to inspect with PyFiguraton"""
-# )
-# moduleParser.add_argument(
-#     "-s", "--script", help="The script against which to inspect the config",
-# )
 
-
-def inspectConfig(script: str, *args, **kwargs):
+def inspectConfig(script: str, sources: Optional[List[str]] = None, *args, **kwargs):
     """ Inspect a configuration file
 
     This command will load the MODULE and look at the defintion. Then
@@ -115,7 +101,7 @@ def inspectConfig(script: str, *args, **kwargs):
     conf = getattr(importedModule, "conf")
 
     # Set the configfile explicitly on the configuration of the module
-    conf.set_configuration()
+    conf.set_configuration(sources=sources)
 
     # Access all keys to check if they're valid
     def checkConfig(
@@ -133,8 +119,6 @@ def inspectConfig(script: str, *args, **kwargs):
             # Access the configuration (triggers the checks as well)
             try:
                 value = configuration[key]
-            except Warning as w:
-                warnings.append(str(w))
             except Exception as e:
                 errors.append(str(e))
 
@@ -142,14 +126,10 @@ def inspectConfig(script: str, *args, **kwargs):
             try:
                 definitionForKey = reduce(operator.getitem, parents, definition)
                 assert definitionForKey[key] != {}
-            except Warning as w:
-                warnings.append(str(w))
             except AssertionError:
                 warnings.append(
                     f"Key '{'.'.join([*parents, key])}' doesn't exist in the definition and is not used in the module."
                 )
-            except Exception as e:
-                errors.append(str(e))
 
             # Recursion
             if isinstance(value, Configuration):
@@ -182,8 +162,6 @@ def inspectConfig(script: str, *args, **kwargs):
                         operator.getitem, parents, configuration
                     )
                     configurationForKey[key]
-            except Warning as w:
-                warnings.append(str(w))
             except Exception as e:
                 errors.append(str(e))
 
@@ -271,17 +249,6 @@ def printDefinition(definition: Dict[str, Any], indent: int = 0):
     print(definitionYAML)
 
 
-def showHelp(exitCode: int = 1):
-    """ Show the help text from the argument parser.
-
-    Args:
-        exitCode (int, optional): The exit code to return when shutting down. Defaults to 1.
-    """
-
-    parser.print_help(sys.stderr)
-    sys.exit(1)
-
-
 def cli(args: Optional[List[str]] = None):
     """ Parse the arguments from the command line and
     take the appropriate action.
@@ -291,7 +258,9 @@ def cli(args: Optional[List[str]] = None):
     parsedArgs = vars(parser.parse_known_args(args)[0])
 
     # Execute the selected action
-    actions[parsedArgs.get("command", None)][parsedArgs.get("inspect_type", None)](**parsedArgs)
+    actions[parsedArgs.get("command", None)][parsedArgs.get("inspect_type", None)](
+        **parsedArgs
+    )
 
 
 actions: Dict[str, Dict[str, Callable[..., None]]] = {
