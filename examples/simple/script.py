@@ -1,7 +1,13 @@
 """ script.py
 """
+import http.server
+import socketserver
+
 from pyfiguration import conf
-from flask import Flask
+
+
+# Create a request handler
+Handler = http.server.SimpleHTTPRequestHandler
 
 
 @conf.addIntField(
@@ -12,10 +18,10 @@ from flask import Flask
     maxValue=9999,
 )
 def startServer():
-    app = Flask(__name__)
     port = conf["server"]["port"]
     print(f"Starting on port {port}")
-    app.run(port=port)
+    with socketserver.TCPServer(("", port), Handler) as httpd:
+        httpd.serve_forever()
 
 
 if __name__ == "__main__":
