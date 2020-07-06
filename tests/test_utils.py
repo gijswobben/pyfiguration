@@ -8,8 +8,8 @@ def test_from_dot_notation():
 
 
 def test_merge_dictionaries():
-    testDict1 = {"level1": {"level2": 123}}
-    testDict2 = {"level1": {"level2": 321}}
+    testDict1 = {"level1": {"level2": 123}, "same_key": "same_value", "key_in_a": "a"}
+    testDict2 = {"level1": {"level2": 321}, "same_key": "same_value", "key_in_b": "b"}
     value = merge_dictionaries(testDict1, testDict2)
     assert isinstance(value, dict)
     assert "level1" in value
