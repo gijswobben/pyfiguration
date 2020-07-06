@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import Any, List, Callable, TYPE_CHECKING
+from typing import Any, List, Callable, Dict, TYPE_CHECKING
 from collections.abc import MutableMapping
 from .utils import from_dot_notation
 
@@ -35,7 +35,7 @@ class Configuration(MutableMapping):
         self.parents = parents
 
         # Create a store to contain the values of this configuration
-        self.store: dict = dict()
+        self.store: Dict[str, Any] = dict()
         self.update(dict(*args, **kwargs))
 
         # Store a reference to the PyFiguration object (to retrieve the definition)
@@ -51,7 +51,7 @@ class Configuration(MutableMapping):
             if not isinstance(value, Configuration)
         }
 
-    def _set_definition(self, definition: dict):
+    def _set_definition(self, definition: Dict[str, Any]):
         """ Helper method to set the definition of this Configuration object,
         using a definition from elsewhere (e.g. the parent Pyfiguration).
 
@@ -64,36 +64,32 @@ class Configuration(MutableMapping):
             if key not in self.store and key not in self.parents:
                 self.store[key] = Configuration(pyfiguration=self.pyfiguration, parents=[*self.parents, key])
 
-            # If the definition is nested, recurse, else just set the value
-            if isinstance(self.definition.get(key, None), defaultdict):
-                self.definition[key]._set_definition(value)
-            else:
-                self.definition[key] = value
+            self.definition[key] = value
 
-    def _remove_empty_definition(self, definition: dict) -> dict:
-        """ Helper method to clean empty keys from a definition. Empty keys
-        are all keys that contain the value `None`.
+    # def _remove_empty_definition(self, definition: dict) -> dict:
+    #     """ Helper method to clean empty keys from a definition. Empty keys
+    #     are all keys that contain the value `None`.
 
-        Args:
-            definition: The definition to clean
+    #     Args:
+    #         definition: The definition to clean
 
-        Returns:
-            cleanDefinition: The definition without empty keys
-        """
-        # First pass to remove all None
-        for key, value in list(definition.items()):
-            if value is None:
-                del definition[key]
-            elif isinstance(value, dict):
-                definition[key] = self._remove_empty_definition(definition[key])
+    #     Returns:
+    #         cleanDefinition: The definition without empty keys
+    #     """
+    #     # First pass to remove all None
+    #     for key, value in list(definition.items()):
+    #         if value is None:
+    #             del definition[key]
+    #         elif isinstance(value, dict):
+    #             definition[key] = self._remove_empty_definition(definition[key])
 
-        # Second pass to remove empty dicts
-        for key, value in list(definition.items()):
-            if isinstance(value, dict) and not value:
-                del definition[key]
+    #     # Second pass to remove empty dicts
+    #     for key, value in list(definition.items()):
+    #         if isinstance(value, dict) and not value:
+    #             del definition[key]
 
-        # Return the clean definition
-        return definition
+    #     # Return the clean definition
+    #     return definition
 
     def get_definition(self) -> dict:
         """ Method to retrieve the definition for this configuration. This will
@@ -107,33 +103,31 @@ class Configuration(MutableMapping):
         self._set_definition(self.pyfiguration.definition)
 
         # Return the cleaned definition
-        return self._remove_empty_definition(
-            {
-                key: (
-                    self.definition.get(key, None)
-                    if not isinstance(value, Configuration)
-                    else value.get_definition()
-                )
-                for key, value in self.definition.items()
-            }
-        )
-
-    def get_access_status(self) -> dict:
-        """ Method to retrieve the status of all the keys in the configuration.
-        Contains all the keys and a boolean value to indicate if the key has been
-        accessed.
-
-        Returns:
-            accessStatus: Dictionary with the access status for each key
-        """
         return {
             key: (
-                self.accessStatus.get(key, None)
-                if isinstance(self.accessStatus.get(key, None), bool)
-                else value.get_access_status()
+                self.definition.get(key, None)
+                if not isinstance(value, Configuration)
+                else value.get_definition()
             )
-            for key, value in self.store.items()
+            for key, value in self.definition.items()
         }
+
+    # def get_access_status(self) -> dict:
+    #     """ Method to retrieve the status of all the keys in the configuration.
+    #     Contains all the keys and a boolean value to indicate if the key has been
+    #     accessed.
+
+    #     Returns:
+    #         accessStatus: Dictionary with the access status for each key
+    #     """
+    #     return {
+    #         key: (
+    #             self.accessStatus.get(key, None)
+    #             if isinstance(self.accessStatus.get(key, None), bool)
+    #             else value.get_access_status()
+    #         )
+    #         for key, value in self.store.items()
+    #     }
 
     def _check_data_type(self, key: str, value: Any):
         """ Method to check if the value of a specific key is of the correct data type.
@@ -288,5 +282,5 @@ class Configuration(MutableMapping):
 
     # Create aliases
     getDefinition = get_definition
-    getAccessStatus = get_access_status
+    # getAccessStatus = get_access_status
     checkValue = check_value
