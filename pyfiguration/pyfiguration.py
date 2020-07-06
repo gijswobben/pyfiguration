@@ -73,7 +73,7 @@ class PyFiguration:
                             config = merge_dictionaries(
                                 config,
                                 yaml.load(open(os.path.join(path, name), "r"), Loader=yaml.FullLoader)
-                            )  # type: ignore
+                            )
 
             # If the source is a JSON file, just read it
             elif source.endswith(".json") and os.path.isfile(source):
