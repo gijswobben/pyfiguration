@@ -29,7 +29,7 @@ class PyFiguration:
         self.setConfiguration()
         self.configurationArgument = "configuration"
 
-    def set_configuration(self, source: Optional[str] = None):
+    def set_configuration(self, sources: Optional[List[str]] = None):
         """ Method to set the configuration for this PyFiguration object. Configuration
         is loaded from a YAML or JSON file.
         """
@@ -48,6 +48,8 @@ class PyFiguration:
         )
         args = vars(parser.parse_known_args()[0])
         configSource: List[str] = args.get("config", [])
+        if sources is not None:
+            configSource += sources
 
         # Create a container for the loaded configurations
         config: dict = {}
