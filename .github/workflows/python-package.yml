@@ -37,9 +37,8 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=100 --max-line-length=127 --statistics
     - name: Generate coverage report
       run: |
-        pip install pytest
-        pip install pytest-cov
-        pytest --cov=pyfiguration --cov-report=xml ./tests
+        pip install pytest pytest-cov behave
+        pytest --cov=pyfiguration ./tests && coverage run --append -m behave tests/features && coverage xml
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
       with:
