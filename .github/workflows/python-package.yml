@@ -38,7 +38,7 @@ jobs:
     - name: Generate coverage report
       run: |
         pip install pytest pytest-cov behave
-        pytest --cov=pyfiguration ./tests && coverage run --append -m behave tests/features && coverage xml
+        pytest --cov=pyfiguration ./tests && coverage run --append -m behave tests/features --no-source --no-timings && coverage xml
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
       with:
